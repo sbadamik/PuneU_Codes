@@ -19,7 +19,7 @@ def Make_Grid(n):
 # Blocks --> Origin of every intraversible region with radius R
 def Insert_Blocks(n, R, Grid, Blocks):
 	
-	while Loc in Blocks:
+	for Loc in Blocks:
 		for i in range(-R, R+1):
 			for j in range(-R, R+1):
 				for k in range(-R, R+1):
@@ -53,9 +53,9 @@ def Map_Grid(n, Start, End, Grid):
 				for k in range(-1,2):
 					TestList.append([((CurLoc[0]+i)%n),((CurLoc[1]+j)%n),((CurLoc[2]+k)%n)])
 
-		while TestLoc in TestList:					# A loop to identify which of the 26 positions need to be numbered as possible move points.
-
-			if Grid[TestLoc[0]][TestLoc[1]][TestLoc[2]] == 999999:														# Test to identify start position and terminate program
+		for TestLoc in TestList:					# A loop to identify which of the 26 positions need to be numbered as possible move points.
+			print(TestLoc)
+			if Grid[TestLoc[0]][TestLoc[1]][TestLoc[2]] == 999999:														# Test to identify start position and terminate program=
 				return Grid
 
 			elif Grid[TestLoc[0]][TestLoc[1]][TestLoc[2]] == 1111111:													# Test to identify intraversible locations
@@ -67,6 +67,7 @@ def Map_Grid(n, Start, End, Grid):
 			else:
 				MainList = MainList + [TestLoc];
 				Grid[TestLoc[0]][TestLoc[1]][TestLoc[2]] = (Grid[CurLoc[0]][CurLoc[1]][CurLoc[2]] + 1)					# Updating step count
+		count = count + 1;
 
 	return Grid
 
@@ -116,12 +117,11 @@ def Read_XYZ(FileName):
 	with open(FileName,"r") as Path:
 		Positions = []
 		N = int(Path.readline())
-		print(N)
-		print("\n")
+
 		Path.readline()
-		for i in range(1,N+1):
+		for i in range(0,N):
 			Atom = Path.readline().strip('\n').split('\t')
-			Positions.append([float(Atom[1]),float(Atom[2]),float(Atom[3])])
+			Positions.append( [ int(float(Atom[1])), int(float(Atom[2])), int(float(Atom[3])) ] )
 
 		Path.close();
 
