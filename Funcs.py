@@ -54,7 +54,6 @@ def Map_Grid(n, Start, End, Grid):
 					TestList.append([((CurLoc[0]+i)%n),((CurLoc[1]+j)%n),((CurLoc[2]+k)%n)])
 
 		for TestLoc in TestList:					# A loop to identify which of the 26 positions need to be numbered as possible move points.
-			print(TestLoc)
 			if Grid[TestLoc[0]][TestLoc[1]][TestLoc[2]] == 999999:														# Test to identify start position and terminate program=
 				return Grid
 
@@ -75,7 +74,7 @@ def Map_Grid(n, Start, End, Grid):
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
 # The following functions appends the appropriate lines of code to an XYZ file
-def Write_XYZ(FileName, Locations):
+def Write_XYZ(FileName, Locations, Names):
 	
 	N_Atoms = len(Locations)
 
@@ -83,7 +82,7 @@ def Write_XYZ(FileName, Locations):
 		Path.write(str(N_Atoms)+"\n")
 		Path.write("Some Element\n")
 		for i in range(0,N_Atoms):
-			Path.write("C\t"+str(Locations[i][0])+"\t"+str(Locations[i][1])+"\t"+str(Locations[i][2])+"\n")
+			Path.write(Names[i]+"\t"+str(Locations[i][0]/5)+"\t"+str(Locations[i][1]/5)+"\t"+str(Locations[i][2]/5)+"\n")
 
 		Path.close();
 
@@ -95,7 +94,7 @@ def Write_XYZ(FileName, Locations):
 
 def Take_Step(n, CurrentPos, Grid):
 
-	NewPosStep = 1000000;
+	NewPosStep = 10000000;
 	NewPos = [(CurrentPos[0]),(CurrentPos[1]),(CurrentPos[2])]
 
 	for i in range(-1,2):						# The following 3 for loops will iterate to check the 26 locations around a certain point.
@@ -121,8 +120,19 @@ def Read_XYZ(FileName):
 		Path.readline()
 		for i in range(0,N):
 			Atom = Path.readline().strip('\n').split('\t')
-			Positions.append( [ int(float(Atom[1])), int(float(Atom[2])), int(float(Atom[3])) ] )
+			Positions.append( [ int(float(Atom[1])*5), int(float(Atom[2])*5), int(float(Atom[3])*5) ] )
 
 		Path.close();
 
 	return Positions
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
+
+def No_Move(CurrentPos,n):
+
+	NewPos = []
+
+	for i in range(len(CurrentPos)):
+		NewPos.append([ ((CurrentPos[i][0]+1)%n), ((CurrentPos[i][1]+1)%n), ((CurrentPos[i][2]+1)%n) ])
+
+	return NewPos

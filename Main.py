@@ -3,20 +3,23 @@
 import Funcs
 
 # Deciding Grid Sizing
-n = 10;
+n = 36;
 
 # Random radius since minimum distance in our code is 0.25nm = 2.5 Angstrom = 25 to scale
-R = 2;
+R = 4;
 
 # Reading initial and final positions of all atoms
-Start_Pos = Funcs.Read_XYZ("InitPos.xyz")
-Final_Pos = Funcs.Read_XYZ("FinalPos.xyz")
+Start_Pos = Funcs.Read_XYZ("Iron_FCC.xyz")
+Final_Pos = Funcs.Read_XYZ("Iron_BCC.xyz")
 
 # Setting up required calculation variables that must be initialized for looping
 Current_Pos = Start_Pos[:]
+LastPos =  []
 
 AtomN = len(Start_Pos)
 CompCounter = 0;
+
+Names = ["Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"]
 
 # Identifying atoms that are already at destination
 for i in range(AtomN):
@@ -27,13 +30,18 @@ for i in range(AtomN):
 ClearFile = open("AllData.xyz","w")
 ClearFile.close()
 
-Funcs.Write_XYZ("AllData.xyz",Start_Pos)
+Funcs.Write_XYZ("AllData.xyz",Start_Pos, Names)
 
 # Iterating the motion
-while CompCounter < AtomN:
+# Each iteration of the while loop is one step for all atoms
+while Current_Pos != Final_Pos:
 
+	CompCounter = 0
+
+	LastPos = [Temp[:] for Temp in Current_Pos]
+
+	# Each iteration of the for considers one step for a different atom
 	for i in range(AtomN):
-
 		Blocks = []
 
 		if Current_Pos[i]!=Final_Pos[i]:
@@ -52,7 +60,12 @@ while CompCounter < AtomN:
 			Current_Pos[i][1] = Move_Step[1]
 			Current_Pos[i][2] = Move_Step[2]
 
-			if Current_Pos[i] == Final_Pos[i]:
-				CompCounter = CompCounter + 1
+		# if Current_Pos[i] == Final_Pos[i]:
+		# 	CompCounter = CompCounter + 1
 
-	Funcs.Write_XYZ("AllData.xyz", Current_Pos)
+	if Current_Pos == LastPos:
+		Current_Pos = Funcs.No_Move(Current_Pos,n)
+		print("A")
+
+	Funcs.Write_XYZ("AllData.xyz", Current_Pos, Names)
+	print("B")

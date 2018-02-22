@@ -31,8 +31,24 @@ import Funcs
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
-A = [1,2,3,4,5,6,7,8,9,0]
-B = A[0:0]
-C = A[4:]
-print(B)
-print(C)
+# # Testing the function in the scenario that the configuration doesnt't change between steps
+
+# TestCase = [ [1,1,1], [2,2,2], [3,3,3], [5,5,5], [6,6,6], [9,9,9] ]
+# n = 10
+
+# print("original:\n")
+# print(TestCase)
+
+# EndCase = Funcs.No_Move(TestCase, n)
+
+# print("\nfinal:\n")
+# print(EndCase)
+
+A = [[1,2,3], [4,5,6], [7,8,9]]
+B = [[1,2,3], [4,5,6], [7,8,9]]
+C = [[1,2,4], [4,5,6], [7,8,9]]
+D = [[1,2,3], [4,5,6], [7,8,6]]
+
+print(A==B)
+print(B==C)
+print(C==D)
