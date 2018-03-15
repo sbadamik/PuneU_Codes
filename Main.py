@@ -3,14 +3,17 @@
 import Funcs
 
 # Deciding Grid Sizing
-n = 36;
+n = [83,74,1];
 
 # Random radius since minimum distance in our code is 0.25nm = 2.5 Angstrom = 25 to scale
-R = 4;
+R = 7;
 
 # Reading initial and final positions of all atoms
-Start_Pos = Funcs.Read_XYZ("Iron_FCC.xyz")
-Final_Pos = Funcs.Read_XYZ("Iron_BCC.xyz")
+[Names,Start_Pos] = Funcs.Read_XYZ("Graphene_Init.xyz")
+Final_Pos = Funcs.Read_XYZ("Graphene_Final.xyz")[1]
+
+# n = Funcs.Set_n(Start_Pos,Final_Pos)
+# print(n)
 
 # Setting up required calculation variables that must be initialized for looping
 Current_Pos = Start_Pos[:]
@@ -19,7 +22,7 @@ LastPos =  []
 AtomN = len(Start_Pos)
 CompCounter = 0;
 
-Names = ["Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","Fe","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"]
+
 
 # Identifying atoms that are already at destination
 for i in range(AtomN):

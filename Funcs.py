@@ -1,12 +1,14 @@
+import math
+
 # Function to set up basic nXnXn grid to map on
 def Make_Grid(n):
-	Grid = [8888888] * n								# Creating n rows
-	for i in range(n):
-		Grid[i] = [8888888] * n 						# Introducing n colums within n rows
+	Grid = [8888888] * n[0]								# Creating n rows
+	for i in range(n[0]):
+		Grid[i] = [8888888] * n[1] 						# Introducing n colums within n rows
 
-	for i in range(n):
-		for j in range(n):
-			Grid[i][j] = [8888888] * n 					# Adding n units within every row and column
+	for i in range(n[0]):
+		for j in range(n[1]):
+			Grid[i][j] = [8888888] * n[2] 					# Adding n units within every row and column
 
 	return Grid
 
@@ -19,12 +21,14 @@ def Make_Grid(n):
 # Blocks --> Origin of every intraversible region with radius R
 def Insert_Blocks(n, R, Grid, Blocks):
 	
+	R = math.ceil(R)
+
 	for Loc in Blocks:
 		for i in range(-R, R+1):
 			for j in range(-R, R+1):
 				for k in range(-R, R+1):
 					if ((i*i)+(j*j)+(k*k)) <= (R*R):
-						Grid[(Loc[0]+i)%n][(Loc[1]+j)%n][(Loc[2]+k)%n] = 1111111
+						Grid[(Loc[0]+i)%n[0]][(Loc[1]+j)%n[1]][(Loc[2]+k)%n[2]] = 1111111
 
 	return Grid
 
@@ -51,7 +55,7 @@ def Map_Grid(n, Start, End, Grid):
 		for i in range(-1,2):						# The following 3 for loops will iterate to check the 26 locations around a certain point.
 			for j in range(-1,2):
 				for k in range(-1,2):
-					TestList.append([((CurLoc[0]+i)%n),((CurLoc[1]+j)%n),((CurLoc[2]+k)%n)])
+					TestList.append([((CurLoc[0]+i)%n[0]),((CurLoc[1]+j)%n[1]),((CurLoc[2]+k)%n[2])])
 
 		for TestLoc in TestList:					# A loop to identify which of the 26 positions need to be numbered as possible move points.
 			if Grid[TestLoc[0]][TestLoc[1]][TestLoc[2]] == 999999:														# Test to identify start position and terminate program=
@@ -82,7 +86,7 @@ def Write_XYZ(FileName, Locations, Names):
 		Path.write(str(N_Atoms)+"\n")
 		Path.write("Some Element\n")
 		for i in range(0,N_Atoms):
-			Path.write(Names[i]+"\t"+str(Locations[i][0]/5)+"\t"+str(Locations[i][1]/5)+"\t"+str(Locations[i][2]/5)+"\n")
+			Path.write(Names[i]+"\t"+str(Locations[i][0]/10)+"\t"+str(Locations[i][1]/10)+"\t"+str(Locations[i][2]/10)+"\n")
 
 		Path.close();
 
@@ -100,9 +104,9 @@ def Take_Step(n, CurrentPos, Grid):
 	for i in range(-1,2):						# The following 3 for loops will iterate to check the 26 locations around a certain point.
 			for j in range(-1,2):
 				for k in range(-1,2):
-					x = (CurrentPos[0]+i)%n;
-					y = (CurrentPos[1]+j)%n;
-					z = (CurrentPos[2]+k)%n;
+					x = (CurrentPos[0]+i)%n[0];
+					y = (CurrentPos[1]+j)%n[1];
+					z = (CurrentPos[2]+k)%n[2];
 					if Grid[x][y][z] < NewPosStep:											# Confirming that the next step is less than our current step
 						NewPosStep = Grid[x][y][z]
 						NewPos = [x,y,z]
@@ -115,16 +119,19 @@ def Read_XYZ(FileName):
 
 	with open(FileName,"r") as Path:
 		Positions = []
+		Names = []
+
 		N = int(Path.readline())
 
 		Path.readline()
 		for i in range(0,N):
 			Atom = Path.readline().strip('\n').split('\t')
-			Positions.append( [ int(float(Atom[1])*5), int(float(Atom[2])*5), int(float(Atom[3])*5) ] )
+			Names.append(Atom[0])
+			Positions.append( [ int(round(float(Atom[1])*10,0)), int(round(float(Atom[2])*10,0)), int(round(float(Atom[3])*10,0)) ] )
 
 		Path.close();
 
-	return Positions
+	return [Names, Positions]
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -133,6 +140,26 @@ def No_Move(CurrentPos,n):
 	NewPos = []
 
 	for i in range(len(CurrentPos)):
-		NewPos.append([ ((CurrentPos[i][0]+1)%n), ((CurrentPos[i][1]+1)%n), ((CurrentPos[i][2]+1)%n) ])
+		NewPos.append([ ((CurrentPos[i][0]+1)%n[0]), ((CurrentPos[i][1]+1)%n[1]), ((CurrentPos[i][2]+1)%n[2]) ])
 
 	return NewPos
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
+
+def Set_n(Start_Pos,Final_Pos):
+	
+	n = [0,0,0]
+
+	Max_Start_X = max(CheckMax[0] for CheckMax in Start_Pos)
+	Max_Start_Y = max(CheckMax[1] for CheckMax in Start_Pos)
+	Max_Start_Z = max(CheckMax[2] for CheckMax in Start_Pos)
+
+	Max_End_X = max(CheckMax[0] for CheckMax in Final_Pos)
+	Max_End_Y = max(CheckMax[1] for CheckMax in Final_Pos)
+	Max_End_Z = max(CheckMax[2] for CheckMax in Final_Pos)
+
+	n[0] = (Max_Start_X * (Max_Start_X>=Max_End_X)) + (Max_End_X * (Max_Start_X<Max_End_X))
+	n[1] = (Max_Start_Y * (Max_Start_Y>=Max_End_Y)) + (Max_End_Y * (Max_Start_Y<Max_End_Y))
+	n[2] = (Max_Start_Z * (Max_Start_Z>=Max_End_Z)) + (Max_End_Z * (Max_Start_Z<Max_End_Z))
+
+	return n
