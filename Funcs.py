@@ -84,7 +84,7 @@ def Write_XYZ(FileName, Locations, Names):
 
 	with open(FileName,"a") as Path:
 		Path.write(str(N_Atoms)+"\n")
-		Path.write("Some Element\n")
+		Path.write("ATOMIC_POSITIONS (angstrom)\n")
 		for i in range(0,N_Atoms):
 			Path.write(Names[i]+"\t"+str(Locations[i][0]/10)+"\t"+str(Locations[i][1]/10)+"\t"+str(Locations[i][2]/10)+"\n")
 

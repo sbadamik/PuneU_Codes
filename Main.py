@@ -6,7 +6,7 @@ import Funcs
 n = [83,74,1];
 
 # Random radius since minimum distance in our code is 0.25nm = 2.5 Angstrom = 25 to scale
-R = 7;
+R = 11;
 
 # Reading initial and final positions of all atoms
 [Names,Start_Pos] = Funcs.Read_XYZ("Graphene_Init.xyz")
